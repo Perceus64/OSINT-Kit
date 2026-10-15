@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Footprint — OSINT in your browser</title>
+  <meta name="description" content="Map a domain's public footprint, read the metadata hiding in files, and pull indicators out of threat reports. Runs in your browser on Rust + WebAssembly.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="masthead">
+    <svg class="contours" aria-hidden="true" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice"></svg>
+    <div class="wrap">
+      <p class="brand"><span class="mark" aria-hidden="true"></span>Footprint</p>
+      <h1>See what the open internet already knows.</h1>
+      <p class="lede">Map a domain's public footprint, read the metadata hiding in files, and pull indicators out of threat reports. Analysis runs in your browser on Rust compiled to WebAssembly; files you drop here never leave your machine.</p>
+
+      <nav class="tabs" role="tablist" aria-label="Tools">
+        <button role="tab" id="tab-domain" aria-controls="panel-domain" aria-selected="true">A domain</button>
+        <button role="tab" id="tab-file" aria-controls="panel-file" aria-selected="false" tabindex="-1">A file</button>
+        <button role="tab" id="tab-ioc" aria-controls="panel-ioc" aria-selected="false" tabindex="-1">Some text</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Domain -->
+    <section id="panel-domain" role="tabpanel" aria-labelledby="tab-domain">
+      <form id="domain-form" class="query" autocomplete="off">
+        <label for="domain-input">Domain to map</label>
+        <div class="query-row">
+          <input id="domain-input" name="domain" placeholder="aust.edu.lb" spellcheck="false" autocapitalize="off" inputmode="url">
+          <button type="submit" class="primary">Map footprint</button>
+        </div>
+        <p class="hint">DNS and email security, registration record, and every subdomain that ever appeared in a public TLS certificate.</p>
+      </form>
+      <div id="domain-out" aria-live="polite"></div>
+    </section>
+
+    <!-- File -->
+    <section id="panel-file" role="tabpanel" aria-labelledby="tab-file" hidden>
+      <div id="drop" class="drop" tabindex="0" role="button" aria-describedby="drop-hint">
+        <input id="file-input" type="file" multiple hidden>
+        <p class="drop-title">Drop files here, or choose them</p>
+        <p id="drop-hint" class="hint">Photos, PDFs, Office documents, executables, anything. You'll get hashes, the real file type, hidden metadata like GPS and author names, and any links or addresses buried inside. Nothing is uploaded.</p>
+      </div>
+      <div id="file-out" aria-live="polite"></div>
+    </section>
+
+    <!-- IOC -->
+    <section id="panel-ioc" role="tabpanel" aria-labelledby="tab-ioc" hidden>
+      <div class="query">
+        <label for="ioc-input">Text to scan</label>
+        <textarea id="ioc-input" rows="9" spellcheck="false" placeholder="Paste a threat report, phishing email headers, logs or a tweet. Defanged indicators like hxxp://evil[.]com are understood."></textarea>
+        <div class="query-row end">
+          <button id="ioc-sample" type="button" class="quiet">Try a sample</button>
+          <button id="ioc-go" type="button" class="primary">Extract indicators</button>
+        </div>
+      </div>
+      <div id="ioc-out" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <p>Use this on things you own or are authorised to assess. Lookups use public sources: Google and Cloudflare DNS-over-HTTPS, RDAP, crt.sh certificate transparency and Team Cymru IP-to-ASN.</p>
+    <p><a href="https://github.com/Perceus64/osint-toolkit">Source on GitHub</a></p>
+    <p id="engine">Loading engine…</p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
